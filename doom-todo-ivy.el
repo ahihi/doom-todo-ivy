@@ -14,6 +14,7 @@
 
 ;;; Code:
 
+(require 'tramp)
 (require 'projectile)
 (require 'ivy)
 
