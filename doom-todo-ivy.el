@@ -61,7 +61,9 @@
                    (concat "\\s("
                            (string-join task-tags "|")
                            ")([\\s:]|\\([^)]+\\):?)"))
-                  target)))
+                  (if (file-remote-p target)
+                      (tramp-file-name-localname (tramp-dissect-file-name target))
+                    target))))
     (save-match-data
       (cl-loop with out = (shell-command-to-string cmd)
                for x in (and out (split-string out "\n" t))
