@@ -50,6 +50,7 @@
 (defun doom/ivy--tasks (target)
   "Search TARGET for a list of tasks."
   (let* (case-fold-search
+         (tramp-file-name (and (file-remote-p target) (tramp-dissect-file-name target)))
          (task-tags (mapcar #'car doom/ivy-task-tags))
          (cmd
           (format "%s -H -S --no-heading -- %s %s"
@@ -62,7 +63,7 @@
                    (concat "\\s("
                            (string-join task-tags "|")
                            ")([\\s:]|\\([^)]+\\):?)"))
-                  (if (file-remote-p target)
+                  (if tramp-file-name
                       (tramp-file-name-localname (tramp-dissect-file-name target))
                     target))))
     (save-match-data
@@ -81,7 +82,17 @@
                        nil))
                collect `((type . ,(match-string 3 x))
                          (desc . ,(match-string 4 x))
-                         (file . ,(match-string 1 x))
+                         (file . ,(let ((file (match-string 1 x)))
+                                    (if tramp-file-name
+                                        (tramp-make-tramp-file-name
+                                         (tramp-file-name-method tramp-file-name)
+                                         (tramp-file-name-user tramp-file-name)
+                                         (tramp-file-name-domain tramp-file-name)
+                                         (tramp-file-name-host tramp-file-name)
+                                         (tramp-file-name-port tramp-file-name)
+                                         file
+                                         (tramp-file-name-hop tramp-file-name))
+                                        file)))
                          (line . ,(match-string 2 x)))))))
 
 
