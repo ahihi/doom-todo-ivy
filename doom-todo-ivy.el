@@ -62,7 +62,7 @@
                   (shell-quote-argument
                    (concat "\\s("
                            (string-join task-tags "|")
-                           ")([\\s:]|\\([^)]+\\):?)"))
+                           ")([\\s:]|\\b|\\([^)]+\\):?)"))
                   (if tramp-file-name
                       (tramp-file-name-localname (tramp-dissect-file-name target))
                     target))))
@@ -73,7 +73,7 @@
                         (string-match
                          (concat "^\\([^:]+\\):\\([0-9]+\\):.+\\("
                                  (string-join task-tags "\\|")
-                                 "\\):?\\s-*\\(.+\\)")
+                                 "\\):?\\s-*\\(.*\\)")
                          x)
                       (error
                        (message "Error matching task in file: (%s) %s"
